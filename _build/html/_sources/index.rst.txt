@@ -10,7 +10,7 @@ Welcome to workflow_stress's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-.. include:: README.md
+.. include:: README.rst
 
 workflow stress package
 =======================
