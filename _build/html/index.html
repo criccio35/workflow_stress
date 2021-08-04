@@ -1,0 +1,625 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to workflow_stress’s documentation! &#8212; workflow stress alpha documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">workflow stress alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to workflow_stress’s documentation!</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-workflow-stress-s-documentation">
+<h1>Welcome to workflow_stress’s documentation!<a class="headerlink" href="#welcome-to-workflow-stress-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p># workflow stress</p>
+</div>
+<div class="section" id="workflow-stress-package">
+<h1>workflow stress package<a class="headerlink" href="#workflow-stress-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-workflow.workflow_stress">
+<span id="workflow-workflow-stress-module"></span><h2>workflow.workflow_stress module<a class="headerlink" href="#module-workflow.workflow_stress" title="Permalink to this headline">¶</a></h2>
+<p>Created on Sun Aug  1 12:14:43 2021</p>
+<p>&#64;author: Camila Riccio</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">workflow.workflow_stress.</span></span><span class="sig-name descname"><span class="pre">workflow</span></span><a class="headerlink" href="#workflow.workflow_stress.workflow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class for condition-specific co-expression network analysis.
+This class builds a co-expression network from RNA-seq data measured under 
+control and stress conditions, detects modules of co-expressed genes
+from the co-expression matrix, and selects a reduced set of genes relevant
+to the stress response represented by a set of phenotypic traits.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.DESeq2">
+<span class="sig-name descname"><span class="pre">DESeq2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.DESeq2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalization method used to correct for library size and RNA
+composition bias.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>D0</strong> (<em>DataFrame</em>) – RNA-seq data measured under 2 contrasting conditions, namely 
+control and stress, for n0 genes and m genotypes with r replicates
+per genotype. Shape (n0,2mr).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>normalized RNA-seq data. Shape (n0,2mr)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.aff_to_com2nodes">
+<span class="sig-name descname"><span class="pre">aff_to_com2nodes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.aff_to_com2nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uses the affiliation matrix to buil a dictionary mapping communities
+to nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>F</strong> (<em>np.ndarray</em><em>[</em><em>bool</em><em>]</em>) – affiliation matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.affiliation_matrix">
+<span class="sig-name descname"><span class="pre">affiliation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.affiliation_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an affiliation matrix where rows are nodes and columns are 
+communities. Each entry in the matrix is equal to ​​1 if the node belongs
+to the community and is equal to 0 otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>com2nodes</strong> (<em>dictionary</em><em>[</em><em>int-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of communities to the member nodes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>affiliation of nodes to zero or multiple communities</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray[bool]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.average_replicates">
+<span class="sig-name descname"><span class="pre">average_replicates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.average_replicates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average replicates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>D1</strong> (<em>DataFrame</em>) – normalized RNA-seq data. Shape (n0,2mr)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>normalized RNA-seq data averaged by genotype. Shape (n0,2m)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.coexpression_network">
+<span class="sig-name descname"><span class="pre">coexpression_network</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">beta_th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.coexpression_network" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a co-expression network with a forced scale-free degree distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>beta_th</strong> (<em>float</em>) – desired minimum scale free topology fitting index (R^2)</p></li>
+<li><p><strong>plot</strong> (<em>bool</em>) – if set to TRUE a plot comparing the phenotypic traits
+under control and stress will be produced.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.data_preprocessing">
+<span class="sig-name descname"><span class="pre">data_preprocessing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr_var_th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lfc_var_th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.data_preprocessing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build matrices Pl and L1 representing, respectively, the changes in
+phenotypic values and expression levels between control and stress
+condition.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr_var_th</strong> (<em>float</em>) – upper threshold for low expression variance</p></li>
+<li><p><strong>lfc_var_th</strong> (<em>float</em>) – upper threshold for low LFC variance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Matrix L1 of shape (n2,m) with LFC values for each 
+gene-genotype tuple, and Pl matrix of shape (m,p) with LFC values
+for each trait-genotype tuple.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple(DataFrame,DataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.edge2coms_to_com2nodes">
+<span class="sig-name descname"><span class="pre">edge2coms_to_com2nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.edge2coms_to_com2nodes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a dictionary mapping edges to communities into a dictionary 
+mapping communities to nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>edge_community_map</strong> (<em>collections.defaultdict</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em><em>-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of edges to the communities to which 
+they belong.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>mapping of the communities to the member nodes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary[int-&gt;list[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.edge2coms_to_node2coms">
+<span class="sig-name descname"><span class="pre">edge2coms_to_node2coms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.edge2coms_to_node2coms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a dictionary mapping edges to communities into a dictionary 
+mapping nodes to communities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>edge_community_map</strong> (<em>collections.defaultdict</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em><em>-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of edges to the communities to which 
+they belong.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>mapping of the nodes to the communities to which they belong.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary[int-&gt;list[int]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.expression_LFC">
+<span class="sig-name descname"><span class="pre">expression_LFC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">genotypes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.expression_LFC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes differential expression values as logarithm in base 2 of
+the ratio between expression under stress and expression under control.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>D3</strong> – normalized RNA-seq data averaged by genotype for genes
+with notable expression and variance. Shape (n1,2m).</p>
+</dd>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Log2 Fold Change of expression data. Shape (n1,m)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.filter_low_expression_and_variance">
+<span class="sig-name descname"><span class="pre">filter_low_expression_and_variance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.filter_low_expression_and_variance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove genes with low expression and low variance in the normalized
+RNA-seq data. Genes with low expression are considered as those having
+more than 80% samples with values smaller than 10. Genes with low
+variance are considered as those whose difference between upper
+quantile and lower quantile is smaller than a threshold var_th.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D2</strong> (<em>DataFrame</em>) – normalized RNA-seq data averaged by genotype. Shape (n0,2m)</p></li>
+<li><p><strong>exp_th</strong> (<em>float</em>) – upper threshold for genes with low expression.</p></li>
+<li><p><strong>var_th</strong> (<em>float</em>) – upper threshold for genes with low variance</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>normalized RNA-seq data averaged by genotype for genes
+with notable expression and variance. Shape (n1,2m) with n1&lt;=n0.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.filter_low_variance_LFC">
+<span class="sig-name descname"><span class="pre">filter_low_variance_LFC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_th</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.25</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.filter_low_variance_LFC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove genes with low variance in LFC data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L0</strong> (<em>DataFrame</em>) – LFC of expression data. Shape (n1,m)</p></li>
+<li><p><strong>var_th</strong> (<em>float</em>) – upper threshold for genes with low variance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>LFC data for genes with notable variance. Shape (n2,m)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.lasso_module_selection_r2py">
+<span class="sig-name descname"><span class="pre">lasso_module_selection_r2py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.lasso_module_selection_r2py" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs a module selection using LASSO from glmnet library in R.
+LASSO adjust a regularized regresision model where the regresor 
+variables are the module eigenges and the outcome is a phenotypic trait.
+Regularization parameter is adjusted with cross-validation.
+LASSO reduces to zero the weights associated to modules with non-
+essential effects in the phenotypic response. Modules with non-zero
+coefficients are the selected ones, considered relevant to the 
+phenotypic response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em><em>[</em><em>float</em><em>]</em>) – Matrix of regresor variables, where each column corresponds
+to a module eigengene. Shape (m,c).</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em><em>[</em><em>float</em><em>]</em>) – Output variable corresponding to a phenotypic trait. Shape (m,)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.load_data">
+<span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">D0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_stress</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load sample data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>D0</strong> (<em>DataFrame</em>) – RNA-seq data measured under 2 contrasting conditions, namely 
+control and stress, for n0 genes and m genotypes with r replicates
+per genotype. Shape (n0,2mr).</p></li>
+<li><p><strong>P_control</strong> (<em>DataFrame</em>) – Phenotypic data measured under control condition
+for m genotypes and p traits. Shape (m,p).</p></li>
+<li><p><strong>P_stress</strong> (<em>DataFrame</em>) – Phenotypic data measured under stress condition
+for m genotypes and p traits. Shape (m,p).</p></li>
+<li><p><strong>plot</strong> (<em>bool</em>) – if set to TRUE a plot comparing the phenotypic traits
+under control and stress will be produced.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.load_precomputed_data">
+<span class="sig-name descname"><span class="pre">load_precomputed_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Pl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">F</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_hlc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.load_precomputed_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load pre-procesed data for m genotypes, n2 genes, p phenotypic traits,
+and c modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Pl</strong> (<em>DataFrame</em>) – LFC of the phenotypic traits. Shape (m,p)</p></li>
+<li><p><strong>L1</strong> (<em>DataFrame</em>) – LFC of the expression for notable genes. shape (n2,m)</p></li>
+<li><p><strong>A</strong> (<em>DataFrame</em>) – Adjacency matrix with scale-free property. Shape (n2,n2)</p></li>
+<li><p><strong>F</strong> (<em>np.ndarray</em><em>[</em><em>bool</em><em>]</em>) – Affiliation matrix from the HLC clustering. Shape (n2,c)</p></li>
+<li><p><strong>plot_hlc</strong> (<em>bool</em>) – if set to True figures will be created summarizing 
+the overlap of the nodes.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.module_eigengenes">
+<span class="sig-name descname"><span class="pre">module_eigengenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_mod_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.module_eigengenes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the module eigengenes as the first principal component of 
+the differential expression profiles for each community.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L1t</strong> (<em>DataFrame</em>) – LFC of the expression for notable genes. shape (m,n2)</p></li>
+<li><p><strong>modules_dict</strong> (<em>dictionary</em><em>[</em><em>int-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – dictionary where keys are modules and values are 
+list of genes</p></li>
+<li><p><strong>min_mod_size</strong> (<em>int</em>) – minimal modules size</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dataframe where each column is the first Principal Component (PC)
+of the gene expression profiles of a given module. Shape (m,c)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.module_identification">
+<span class="sig-name descname"><span class="pre">module_identification</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.module_identification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify modules of overlapping communities from a co-expression 
+network using Hierarchical Link Clustering (HLC)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>plot</strong> – if set to True figures will be created summarizing 
+the overlap of the nodes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.module_selection">
+<span class="sig-name descname"><span class="pre">module_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.module_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Each module is represented by an eigengene, which is associated with 
+each phenotypic trait using LASSO as a feature selection mechanism.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>plot</strong> (<em>bool</em>) – if set to true, figures will be created showing 
+cross-validation of LASSO for each phenotypic trait.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Table listing the modules selected for each phenotypic 
+trait and their corresponding genes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.pickSoftTreshold">
+<span class="sig-name descname"><span class="pre">pickSoftTreshold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power_vect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3,</span> <span class="pre">4,</span> <span class="pre">5,</span> <span class="pre">6,</span> <span class="pre">7,</span> <span class="pre">8,</span> <span class="pre">9,</span> <span class="pre">10,</span> <span class="pre">12,</span> <span class="pre">14,</span> <span class="pre">16,</span> <span class="pre">18,</span> <span class="pre">20]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nBreaks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.pickSoftTreshold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analysis of scale free topology for multiple beta powers that helps to
+pick an appropriate beta power for network construction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corx</strong> (<em>np.ndarray</em><em>[</em><em>float</em><em>]</em>) – weighted correlation matrix. Shape (n2,n2)</p></li>
+<li><p><strong>power_vect</strong> (<em>list</em><em>[</em><em>int</em><em>]</em>) – possible beta values to force a scale-free network</p></li>
+<li><p><strong>nBreaks</strong> (<em>int</em>) – number of intervals to compute weighted network degree 
+distribution</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scale-free statistics for each power beta: beta value, R^2 
+of the weighted degree distribution, slope of the linear model 
+fitted to the degree distribution, network average node strength,
+network median node strength, network maximum node strength.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DataFrame[int,float,float,float,float,float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="workflow.workflow_stress.workflow.scaleFreeFitIndex">
+<span class="sig-name descname"><span class="pre">scaleFreeFitIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nBreaks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.scaleFreeFitIndex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weighted degree distribution. Fits a linear model between 
+the logarithm of the probability that a node belongs to a given 
+strenght interval and the strength mean of the nodes within each 
+strenght interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>k</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – Node strength. The sum of weights of links connected to each 
+node.</p></li>
+<li><p><strong>nBreaks</strong> (<em>int</em>) – number of bins in strength histograms</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scale-free topology fit (R^2 of the adjusted linear model),
+slope of the fitted linear model, logarithm of the probability 
+that a node belongs to a given strenght interval, strength 
+mean of the nodes within each strenght interval, adjusted linear 
+model prediction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple(float,float,np.ndarray[float],np.ndarray[float],
+np.ndarray[float])</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-workflow.plots">
+<span id="workflow-plots-module"></span><h2>workflow.plots module<a class="headerlink" href="#module-workflow.plots" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue Aug  3 15:45:26 2021</p>
+<p>&#64;author: Camila Riccio</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.autolabel1">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">autolabel1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'k'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.autolabel1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach a text label above each bar displaying its height</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.autolabel2">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">autolabel2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rects</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'k'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.autolabel2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attach a text label above each bar displaying its height</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.plot_continuous_degree_distribution">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">plot_continuous_degree_distribution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">corx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nBreaks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.plot_continuous_degree_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a plot of the degree distribution for a weighted adjacency matrix,
+Fits a linear model between the logarithm of the probability that a node
+belongs to a given strenght interval and the average strength of the nodes
+within each strenght interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>corx</strong> – correlation matrix (with 1’s in the diagonal)</p></li>
+<li><p><strong>nBreaks</strong> (<em>int</em>) – number of bins in strength histogram</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.plot_overlapping_histogram">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">plot_overlapping_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.plot_overlapping_histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot histogram with the overlapping percentage of the genes, measured 
+as the proportion of modules to which each gene belongs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>F</strong> (<em>np.ndarray</em><em>[</em><em>bool</em><em>]</em>) – Affiliation matrix from the HLC clustering. Rows represent genes
+and columns represent modules. An entry in F is equal to 1 if the gene
+belongs to the module, zero otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.plot_overlapping_pie">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">plot_overlapping_pie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.plot_overlapping_pie" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a pie chart of the percentage of genes that belong to zero, one,
+or multiple modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>F</strong> (<em>np.ndarray</em><em>[</em><em>bool</em><em>]</em>) – Affiliation matrix from the HLC clustering. Rows represent genes
+and columns represent modules. An entry in F is equal to 1 if the gene
+belongs to the module, zero otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.plot_phenotypic_traits_boxplot">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">plot_phenotypic_traits_boxplot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">P_control</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P_stress</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.plot_phenotypic_traits_boxplot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Comparative boxplots of the phenotypic traits under control and stress 
+conditions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>P_control</strong> (<em>DataFrame</em>) – Phenotypic data under control condition for m genotypes
+and p traits. Shape (m,p)</p></li>
+<li><p><strong>P_stress</strong> – Phenotypic data under stress condition for m genotypes
+and p traits. Shape (m,p)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="workflow.plots.plot_scale_free_adjustment">
+<span class="sig-prename descclassname"><span class="pre">workflow.plots.</span></span><span class="sig-name descname"><span class="pre">plot_scale_free_adjustment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">S</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.plots.plot_scale_free_adjustment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a comparative plot of the weighted degree distribution for two 
+adjacency matrices. Useful to visualize how the degree distribution of a
+similarity matrix (S) becomes a scale-free degree distribution by raising
+the elements of the similarity matrix to a beta exponent in matrix (A)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>S</strong> (<em>DataFrame</em>) – Similarity matrix of shape (n2,n2) with beta equal to 1</p></li>
+<li><p><strong>A</strong> (<em>DataFrame</em>) – Adjacency matrix of shape (n2,n2). This parameter is optional
+and it will be ignored if beta is not None.</p></li>
+<li><p><strong>beta</strong> (<em>int</em>) – power to which each element of the matrix S is raised 
+to force a scale-free degree distribution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workflow">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-workflow" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to workflow_stress’s documentation!</a></li>
+<li><a class="reference internal" href="#workflow-stress-package">workflow stress package</a><ul>
+<li><a class="reference internal" href="#module-workflow.workflow_stress">workflow.workflow_stress module</a></li>
+<li><a class="reference internal" href="#module-workflow.plots">workflow.plots module</a></li>
+<li><a class="reference internal" href="#module-workflow">Module contents</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">workflow stress alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Welcome to workflow_stress’s documentation!</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, Camila Riccio.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.2.
+    </div>
+  </body>
+</html>

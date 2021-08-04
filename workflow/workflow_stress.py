@@ -125,8 +125,9 @@ class workflow:
             control and stress, for n0 genes and m genotypes with r replicates
             per genotype. Shape (n0,2mr).
         :type D0: DataFrame
-        :return : normalized RNA-seq data. Shape (n0,2mr)
-        :rtype : DataFrame
+        
+        :return: normalized RNA-seq data. Shape (n0,2mr)
+        :rtype: DataFrame
         '''
         # step 1: take log of all values
         df_deseq = D0.apply(np.log)
@@ -146,10 +147,13 @@ class workflow:
     
     def average_replicates(D1):
         '''
+        Average replicates
+        
         :param D1: normalized RNA-seq data. Shape (n0,2mr)
         :type D1: DataFrame
-        :return : normalized RNA-seq data averaged by genotype. Shape (n0,2m)
-        :rtype : DataFrame
+        
+        :return: normalized RNA-seq data averaged by genotype. Shape (n0,2m)
+        :rtype: DataFrame
         '''
         D2 = pd.DataFrame()
         unique_vars = list(set([var[0] for var in D1.columns.str.split('_GSM')]))
@@ -172,9 +176,10 @@ class workflow:
         :type exp_th: float
         :param var_th: upper threshold for genes with low variance
         :type var_th: float
-        :return : normalized RNA-seq data averaged by genotype for genes
+        
+        :return: normalized RNA-seq data averaged by genotype for genes
             with notable expression and variance. Shape (n1,2m) with n1<=n0.
-        :rtype : DataFrame
+        :rtype: DataFrame
         '''
         # 1. Remove genes with low expression
         q = np.array(D2.quantile(0.8,axis = 1))
@@ -194,8 +199,9 @@ class workflow:
         :param D3: normalized RNA-seq data averaged by genotype for genes
             with notable expression and variance. Shape (n1,2m).
         :type: DataFrame
-        :return : Log2 Fold Change of expression data. Shape (n1,m)
-        :rtype : DataFrame
+        
+        :return: Log2 Fold Change of expression data. Shape (n1,m)
+        :rtype: DataFrame
         '''
         L0 = pd.DataFrame()
         j = 0
@@ -213,8 +219,9 @@ class workflow:
         :type L0: DataFrame
         :param var_th: upper threshold for genes with low variance.
         :type var_th: float
-        :return : LFC data for genes with notable variance. Shape (n2,m)
-        :rtype : DataFrame
+        
+        :return: LFC data for genes with notable variance. Shape (n2,m)
+        :rtype: DataFrame
         '''
         uq = L0.quantile(0.75,axis = 1)
         lq = L0.quantile(0.25,axis = 1)
@@ -232,7 +239,7 @@ class workflow:
         :param lfc_var_th: upper threshold for low LFC variance
         :type lfc_var_th: float
         
-        :return : Matrix L1 of shape (n2,m) with LFC values for each 
+        :return: Matrix L1 of shape (n2,m) with LFC values for each 
             gene-genotype tuple, and Pl matrix of shape (m,p) with LFC values
             for each trait-genotype tuple.
         :rtype: tuple(DataFrame,DataFrame)
@@ -280,12 +287,12 @@ class workflow:
         :param nBreaks: number of bins in strength histograms
         :type nBreaks: int
         
-        :return : scale-free topology fit (R^2 of the adjusted linear model),
+        :return: scale-free topology fit (R^2 of the adjusted linear model),
             slope of the fitted linear model, logarithm of the probability 
             that a node belongs to a given strenght interval, strength 
             mean of the nodes within each strenght interval, adjusted linear 
             model prediction.
-        :rtype : tuple(float,float,np.ndarray[float],np.ndarray[float],
+        :rtype: tuple(float,float,np.ndarray[float],np.ndarray[float],
                        np.ndarray[float])
         '''
         hist, bins = np.histogram(k,bins=nBreaks)
@@ -321,11 +328,11 @@ class workflow:
             distribution
         :type nBreaks: int
         
-        :return : scale-free statistics for each power beta: beta value, R^2 
+        :return: scale-free statistics for each power beta: beta value, R^2 
             of the weighted degree distribution, slope of the linear model 
             fitted to the degree distribution, network average node strength,
             network median node strength, network maximum node strength.
-        :rtype : DataFrame[int,float,float,float,float,float]
+        :rtype: DataFrame[int,float,float,float,float,float]
         '''
         
         # node strenght of nodes
@@ -413,8 +420,9 @@ class workflow:
         :param edge_community_map: mapping of edges to the communities to which 
             they belong.
         :type edge_community_map: collections.defaultdict[tuple[int,int]->list[int]]
-        :return : mapping of the nodes to the communities to which they belong.
-        :rtype : dictionary[int->list[int]] 
+        
+        :return: mapping of the nodes to the communities to which they belong.
+        :rtype: dictionary[int->list[int]] 
         '''
         
         node2coms = dict()
@@ -444,8 +452,9 @@ class workflow:
         :param edge_community_map: mapping of edges to the communities to which 
             they belong.
         :type edge_community_map: collections.defaultdict[tuple[int,int]->list[int]]
-        :return : mapping of the communities to the member nodes
-        :rtype : dictionary[int->list[int]] 
+        
+        :return: mapping of the communities to the member nodes
+        :rtype: dictionary[int->list[int]] 
         '''
         com2nodes = dict()
         clustered_nodes = set()
@@ -472,7 +481,7 @@ class workflow:
         :param com2nodes: mapping of communities to the member nodes
         :type com2nodes: dictionary[int->list[int]]
         
-        :return : affiliation of nodes to zero or multiple communities
+        :return: affiliation of nodes to zero or multiple communities
         :rtype: np.ndarray[bool]
         '''
         
@@ -557,9 +566,11 @@ class workflow:
             list of genes
         :type modules_dict: dictionary[int->list[int]]
         :param min_mod_size: minimal modules size
-        :return : dataframe where each column is the first Principal Component (PC)
+        :type min_mod_size: int
+        
+        :return: dataframe where each column is the first Principal Component (PC)
             of the gene expression profiles of a given module. Shape (m,c)
-        :rtype : DataFrame    
+        :rtype: DataFrame    
         '''
         if len(node_names)==0:
             #node_names = list(range(L1t.shape[0]))
@@ -634,9 +645,9 @@ class workflow:
             cross-validation of LASSO for each phenotypic trait.
         :type plot: bool
         
-        :return : Table listing the modules selected for each phenotypic 
+        :return: Table listing the modules selected for each phenotypic 
             trait and their corresponding genes
-        :rtype : DataFrame
+        :rtype: DataFrame
         '''
         print('----*Detection of modules relevant to Phenotypic response*----')
         print('F: ',self.F.shape)            
