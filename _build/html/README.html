@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>&lt;no title&gt; &#8212; workflow stress alpha documentation</title>
+    <title>Condition-specific co-expression network analysis &#8212; workflow stress alpha documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
@@ -32,7 +32,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">workflow stress alpha documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Condition-specific co-expression network analysis</a></li> 
       </ul>
     </div>  
 
@@ -45,6 +45,59 @@
 <li><p>Written by Camila Riccio</p></li>
 <li><p>Last update: 04/08/21</p></li>
 </ul>
+<div class="section" id="condition-specific-co-expression-network-analysis">
+<h1>Condition-specific co-expression network analysis<a class="headerlink" href="#condition-specific-co-expression-network-analysis" title="Permalink to this headline">¶</a></h1>
+<p>This is a Python3 implementation of a workflow to analyze co-expression networks
+under a specific condition. The workflow takes as input the RNA sequencing read
+counts and phenotypical data of different genotypes, measured under control and
+stress conditions. It outputs a reduced group of genes marked as relevant for
+stress response. The workflow aims to identify specific modules of overlapping
+communities underlying the co-expression network of genes. Module detection is
+achieved by using Hierarchical Link Clustering (HLC). LASSO regression is
+employed as a feature selection mechanism to identify groups of genes that
+jointly respond to a stress condition.</p>
+<p>The structure of the workflow is depicted in file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/workflow_structure.pdf">workflow_structure.pdf</a>.</p>
+</div>
+<div class="section" id="setup">
+<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<p>Clone the repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">criccio35</span><span class="o">/</span><span class="n">workflow_stress</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example">
+<h1>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h1>
+<p>The folder <strong>test</strong> contains two examples that illustrate how to use the code
+to analyze co-expression networks under a stress condition. The file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/test/test_case_study.py">test_case_study.py</a>
+illustrates how the workflow can be used to identify potential saline stress
+responsive genes in rice (<em>Oriza sativa</em>). The RNA-seq data is available on the
+GEO database <a class="reference external" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE98455">(GSE98455)</a>,
+and the phenotypic data is a subset of the supplementary file 1 included in
+<a class="reference external" href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1006823">this paper</a>.
+The cleaned data can be found in folder <strong>data</strong> inside folder <strong>test</strong>.
+Meanwhile file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/test/test_small.py">test_small.py</a>
+illustrates how to apply the workflow to a 90%
+smaller and random RNA-seq dataset for faster code execution.
+The outputs of each stage of the workflow (see file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/workflow_structure.pdf">workflow_structure.pdf</a>.)
+are automatically saved in folder <strong>output</strong>.</p>
+<div class="section" id="how-to-run-the-example">
+<h2>How to run the example?<a class="headerlink" href="#how-to-run-the-example" title="Permalink to this headline">¶</a></h2>
+<p>To run the small example execute the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">test</span><span class="o">/</span>
+<span class="n">python3</span> <span class="n">test_small</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>To run the example of saline stress in rice execute the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">test</span><span class="o">/</span>
+<span class="n">python3</span> <span class="n">test_case_study</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div>
+</div>
 
 
             <div class="clearer"></div>
@@ -53,6 +106,16 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Condition-specific co-expression network analysis</a></li>
+<li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#example">Example</a><ul>
+<li><a class="reference internal" href="#how-to-run-the-example">How to run the example?</a></li>
+</ul>
+</li>
+</ul>
+
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -84,7 +147,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">workflow stress alpha documentation</a> &#187;</li>
-        <li class="nav-item nav-item-this"><a href="">&lt;no title&gt;</a></li> 
+        <li class="nav-item nav-item-this"><a href="">Condition-specific co-expression network analysis</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

@@ -49,6 +49,59 @@
 <li><p>Written by Camila Riccio</p></li>
 <li><p>Last update: 04/08/21</p></li>
 </ul>
+<div class="section" id="condition-specific-co-expression-network-analysis">
+<h2>Condition-specific co-expression network analysis<a class="headerlink" href="#condition-specific-co-expression-network-analysis" title="Permalink to this headline">¶</a></h2>
+<p>This is a Python3 implementation of a workflow to analyze co-expression networks
+under a specific condition. The workflow takes as input the RNA sequencing read
+counts and phenotypical data of different genotypes, measured under control and
+stress conditions. It outputs a reduced group of genes marked as relevant for
+stress response. The workflow aims to identify specific modules of overlapping
+communities underlying the co-expression network of genes. Module detection is
+achieved by using Hierarchical Link Clustering (HLC). LASSO regression is
+employed as a feature selection mechanism to identify groups of genes that
+jointly respond to a stress condition.</p>
+<p>The structure of the workflow is depicted in file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/workflow_structure.pdf">workflow_structure.pdf</a>.</p>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>Clone the repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="nd">@github</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="n">criccio35</span><span class="o">/</span><span class="n">workflow_stress</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p>The folder <strong>test</strong> contains two examples that illustrate how to use the code
+to analyze co-expression networks under a stress condition. The file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/test/test_case_study.py">test_case_study.py</a>
+illustrates how the workflow can be used to identify potential saline stress
+responsive genes in rice (<em>Oriza sativa</em>). The RNA-seq data is available on the
+GEO database <a class="reference external" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE98455">(GSE98455)</a>,
+and the phenotypic data is a subset of the supplementary file 1 included in
+<a class="reference external" href="https://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1006823">this paper</a>.
+The cleaned data can be found in folder <strong>data</strong> inside folder <strong>test</strong>.
+Meanwhile file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/test/test_small.py">test_small.py</a>
+illustrates how to apply the workflow to a 90%
+smaller and random RNA-seq dataset for faster code execution.
+The outputs of each stage of the workflow (see file
+<a class="reference external" href="https://github.com/criccio35/workflow_stress/blob/master/workflow_structure.pdf">workflow_structure.pdf</a>.)
+are automatically saved in folder <strong>output</strong>.</p>
+<div class="section" id="how-to-run-the-example">
+<h3>How to run the example?<a class="headerlink" href="#how-to-run-the-example" title="Permalink to this headline">¶</a></h3>
+<p>To run the small example execute the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">test</span><span class="o">/</span>
+<span class="n">python3</span> <span class="n">test_small</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+<p>To run the example of saline stress in rice execute the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">test</span><span class="o">/</span>
+<span class="n">python3</span> <span class="n">test_case_study</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 <div class="section" id="workflow-stress-package">
 <h1>workflow stress package<a class="headerlink" href="#workflow-stress-package" title="Permalink to this headline">¶</a></h1>
@@ -99,13 +152,17 @@ to nodes.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="workflow.workflow_stress.workflow.affiliation_matrix">
-<span class="sig-name descname"><span class="pre">affiliation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_nodes</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.affiliation_matrix" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">affiliation_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">total_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_mod_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.affiliation_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an affiliation matrix where rows are nodes and columns are 
 communities. Each entry in the matrix is equal to ​​1 if the node belongs
 to the community and is equal to 0 otherwise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>com2nodes</strong> (<em>dictionary</em><em>[</em><em>int-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of communities to the member nodes</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>com2nodes</strong> (<em>dictionary</em><em>[</em><em>int-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of communities to the member nodes</p></li>
+<li><p><strong>total_nodes</strong> (<em>int</em>) – total number of nodes in the network.</p></li>
+<li><p><strong>min_mod_size</strong> (<em>int</em>) – minimal modules size</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>affiliation of nodes to zero or multiple communities</p>
@@ -179,8 +236,11 @@ for each trait-genotype tuple.</p>
 mapping communities to nodes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>edge_community_map</strong> (<em>collections.defaultdict</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em><em>-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of edges to the communities to which 
-they belong.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>edge_community_map</strong> (<em>collections.defaultdict</em><em>[</em><em>tuple</em><em>[</em><em>int</em><em>,</em><em>int</em><em>]</em><em>-&gt;list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – mapping of edges to the communities to which 
+they belong.</p></li>
+<li><p><strong>total_nodes</strong> (<em>int</em>) – total number of nodes in the network.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>mapping of the communities to the member nodes</p>
@@ -280,7 +340,7 @@ with notable expression and variance. Shape (n1,2m) with n1&lt;=n0.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="workflow.workflow_stress.workflow.lasso_module_selection_r2py">
-<span class="sig-name descname"><span class="pre">lasso_module_selection_r2py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.lasso_module_selection_r2py" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">lasso_module_selection_r2py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trait</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.lasso_module_selection_r2py" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a module selection using LASSO from glmnet library in R.
 LASSO adjust a regularized regresision model where the regresor 
 variables are the module eigenges and the outcome is a phenotypic trait.
@@ -295,6 +355,7 @@ phenotypic response.</p>
 <li><p><strong>X</strong> (<em>np.ndarray</em><em>[</em><em>float</em><em>]</em>) – Matrix of regresor variables, where each column corresponds
 to a module eigengene. Shape (m,c).</p></li>
 <li><p><strong>y</strong> (<em>np.ndarray</em><em>[</em><em>float</em><em>]</em>) – Output variable corresponding to a phenotypic trait. Shape (m,)</p></li>
+<li><p><strong>trait</strong> (<em>str</em>) – phenotypic trait name or identifier</p></li>
 </ul>
 </dd>
 </dl>
@@ -332,7 +393,7 @@ and c modules.</p>
 <li><p><strong>Pl</strong> (<em>DataFrame</em>) – LFC of the phenotypic traits. Shape (m,p)</p></li>
 <li><p><strong>L1</strong> (<em>DataFrame</em>) – LFC of the expression for notable genes. shape (n2,m)</p></li>
 <li><p><strong>A</strong> (<em>DataFrame</em>) – Adjacency matrix with scale-free property. Shape (n2,n2)</p></li>
-<li><p><strong>F</strong> (<em>np.ndarray</em><em>[</em><em>bool</em><em>]</em>) – Affiliation matrix from the HLC clustering. Shape (n2,c)</p></li>
+<li><p><strong>F</strong> (<em>scipy.sparse.csr.csr_matrix</em>) – Affiliation matrix from the HLC clustering. Shape (n2,c)</p></li>
 <li><p><strong>plot_hlc</strong> (<em>bool</em>) – if set to True figures will be created summarizing 
 the overlap of the nodes.</p></li>
 </ul>
@@ -342,7 +403,7 @@ the overlap of the nodes.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="workflow.workflow_stress.workflow.module_eigengenes">
-<span class="sig-name descname"><span class="pre">module_eigengenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_mod_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.module_eigengenes" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">module_eigengenes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">modules_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_mod_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#workflow.workflow_stress.workflow.module_eigengenes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the module eigengenes as the first principal component of 
 the differential expression profiles for each community.</p>
 <dl class="field-list simple">
@@ -388,11 +449,11 @@ each phenotypic trait using LASSO as a feature selection mechanism.</p>
 cross-validation of LASSO for each phenotypic trait.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Table listing the modules selected for each phenotypic 
-trait and their corresponding genes</p>
+<dd class="field-even"><p>Dictionary mapping the selected modules to their 
+corresponding genes</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>DataFrame</p>
+<dd class="field-odd"><p>dictionary[str-&gt;list[str]]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -576,7 +637,15 @@ to force a scale-free degree distribution.</p></li>
         <div class="sphinxsidebarwrapper">
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Welcome to workflow_stress’s documentation!</a></li>
+<li><a class="reference internal" href="#">Welcome to workflow_stress’s documentation!</a><ul>
+<li><a class="reference internal" href="#condition-specific-co-expression-network-analysis">Condition-specific co-expression network analysis</a></li>
+<li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#example">Example</a><ul>
+<li><a class="reference internal" href="#how-to-run-the-example">How to run the example?</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#workflow-stress-package">workflow stress package</a><ul>
 <li><a class="reference internal" href="#module-workflow.workflow_stress">workflow.workflow_stress module</a></li>
 <li><a class="reference internal" href="#module-workflow.plots">workflow.plots module</a></li>
