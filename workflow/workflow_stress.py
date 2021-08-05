@@ -17,6 +17,7 @@ import numpy as np
 import networkx as nx
 from sklearn.linear_model import LinearRegression
 from cdlib import algorithms
+from scipy import sparse
 from sklearn.decomposition import PCA
 from rpy2.robjects.numpy2ri import numpy2ri
 from rpy2.robjects.packages import STAP
@@ -89,7 +90,7 @@ class workflow:
         :param A: Adjacency matrix with scale-free property. Shape (n2,n2)
         :type A: DataFrame
         :param F: Affiliation matrix from the HLC clustering. Shape (n2,c)
-        :type F: np.ndarray[bool]
+        :type F: scipy.sparse.csr.csr_matrix
         :param plot_hlc: if set to True figures will be created summarizing 
             the overlap of the nodes.
         :type plot_hlc: bool
@@ -104,7 +105,7 @@ class workflow:
             self.A = A
             print('A: ',A.shape)
         if (self.F is None):
-            self.F = F
+            self.F = F.toarray()
             print('F: ',F.shape)
             if plot_hlc:
                 print('Creating overlapping module detection figures...')
@@ -452,6 +453,8 @@ class workflow:
         :param edge_community_map: mapping of edges to the communities to which 
             they belong.
         :type edge_community_map: collections.defaultdict[tuple[int,int]->list[int]]
+        :param total_nodes: total number of nodes in the network.
+        :type total_nodes: int
         
         :return: mapping of the communities to the member nodes
         :rtype: dictionary[int->list[int]] 
@@ -472,7 +475,7 @@ class workflow:
         
         return com2nodes
         
-    def affiliation_matrix(com2nodes,total_nodes):
+    def affiliation_matrix(com2nodes,total_nodes,min_mod_size=3):
         '''
         Creates an affiliation matrix where rows are nodes and columns are 
         communities. Each entry in the matrix is equal to ​​1 if the node belongs
@@ -480,21 +483,26 @@ class workflow:
         
         :param com2nodes: mapping of communities to the member nodes
         :type com2nodes: dictionary[int->list[int]]
+        :param total_nodes: total number of nodes in the network.
+        :type total_nodes: int
+        :param min_mod_size: minimal modules size
+        :type min_mod_size: int
         
         :return: affiliation of nodes to zero or multiple communities
         :rtype: np.ndarray[bool]
         '''
+    
+        # remove the modules that do not have the minimal genes
+        new_com2nodes = {key:val for key, val in com2nodes.items() if len(val) >= min_mod_size}
+        new_com2nodes.pop(-1,None) # com -1 is the one with the unclustered nodes
+        total_coms = len(new_com2nodes)
         
-        total_coms = len(com2nodes)-1 # com -1 is the one with the unclustered nodes
         F = np.zeros([total_nodes,total_coms])
         
-        for c,nodes in com2nodes.items():
+        for c,nodes in new_com2nodes.items():
             if c != -1:
                 for n in nodes:
                     F[n][c] = 1
-        
-        with open('test/output/F_hlc.npy', 'wb') as f:
-            np.save(f, F)
         
         return F
     
@@ -517,6 +525,7 @@ class workflow:
         A_hat.to_csv('test/output/A_unweighted.csv',index=True,header=True,sep=',')
         
         G = nx.Graph(A_hat.values)
+        G.remove_edges_from(nx.selfloop_edges(G)) # remove self loops
         print(nx.info(G))
         
         # HLC clustering
@@ -530,8 +539,9 @@ class workflow:
         
         # build affiliation matrix
         self.F = workflow.affiliation_matrix(com2nodes_dict, G.number_of_nodes())
-        with open('test/output/F_hlc.npy', 'wb') as f:
-            np.save(f, self.F)
+        Fs = sparse.csr_matrix(self.F)
+        print('Saving affiliation matrix into file...')
+        sparse.save_npz("test/output/F_hlc.npz", Fs)
             
         if plot:
             print('Creating overlapping module detection figures...')
@@ -555,7 +565,7 @@ class workflow:
             com2nodes[com] = [n for n in range(F.shape[0]) if F[n][com]]
         return com2nodes
     
-    def module_eigengenes(L1t,modules_dict,min_mod_size = 3,node_names=[]):
+    def module_eigengenes(L1t,modules_dict,min_mod_size = 3,node_names=None):
         '''
         Computes the module eigengenes as the first principal component of 
         the differential expression profiles for each community.
@@ -572,12 +582,11 @@ class workflow:
             of the gene expression profiles of a given module. Shape (m,c)
         :rtype: DataFrame    
         '''
-        if len(node_names)==0:
-            #node_names = list(range(L1t.shape[0]))
+        if (node_names is None):
             node_names = np.array(L1t.columns.tolist())
         total_coms = len(modules_dict)
         moduleEigengen = pd.DataFrame(index = L1t.index)
-        sub_module_dict = {}
+        sub_module_dict = dict()
         for i in range(total_coms):
             if len(modules_dict[i]) >= min_mod_size:
                 sub_module_dict[i] = modules_dict[i]                
@@ -585,7 +594,7 @@ class workflow:
                 moduleEigengen[i] = PCA(n_components=1).fit_transform(x)
         return moduleEigengen
     
-    def lasso_module_selection_r2py(X,y,trait='_',plot=False):
+    def lasso_module_selection_r2py(X,y,trait,plot=False):
         '''
         Performs a module selection using LASSO from glmnet library in R.
         LASSO adjust a regularized regresision model where the regresor 
@@ -601,6 +610,8 @@ class workflow:
         :type X: np.ndarray[float]
         :param y: Output variable corresponding to a phenotypic trait. Shape (m,)
         :type y: np.ndarray[float]
+        :param trait: phenotypic trait name or identifier
+        :type trait: str
         '''
         R_lasso_string = '''
         R_lasso <- function(X,y,trait,rplot){
@@ -645,9 +656,9 @@ class workflow:
             cross-validation of LASSO for each phenotypic trait.
         :type plot: bool
         
-        :return: Table listing the modules selected for each phenotypic 
-            trait and their corresponding genes
-        :rtype: DataFrame
+        :return: Dictionary mapping the selected modules to their 
+            corresponding genes
+        :rtype: dictionary[str->list[str]]
         '''
         print('----*Detection of modules relevant to Phenotypic response*----')
         print('F: ',self.F.shape)            
@@ -677,12 +688,11 @@ class workflow:
             selected_mods[self.Pl.columns[z]] = sn
         
         self.I = I
-        df = pd.concat({k: pd.DataFrame(v).T for k, v in selected_mods.items()}, axis=0)
         
         print('Done')
         print('-------------------------------------------------------------')
         
-        return df
+        return selected_mods
             
         
         
