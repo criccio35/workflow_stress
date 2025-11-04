@@ -1,7 +1,7 @@
 * Written by Camila Riccio
 * Last update: 04/08/21 
 
-Condition-specific co-expression network analysis
+Control-Stress data Integration with Overlapping Clustering (CSI-OC)
 -------------------------------------------------
 
 This is a Python3 implementation of a workflow to analyze co-expression networks
